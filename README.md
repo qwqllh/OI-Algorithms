@@ -4,7 +4,7 @@
 
 由于本人较菜，并没有很高端的板子QwQ
 
-Github仓库地址：[https://github.com/fatsky/OIer-Algorithm](https://github.com/qwqllh/OIer-Algorithm)
+Github仓库地址：[https://github.com/qwqllh/OI-Algorithm](https://github.com/qwqllh/OI-Algorithm)
 
 Gitee仓库地址：[https://gitee.com/fatsky/OIer-algorithms](https://gitee.com/fatsky/OIer-algorithms)
 
