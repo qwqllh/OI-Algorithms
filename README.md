@@ -4,9 +4,9 @@
 
 由于本人较菜，并没有很高端的板子QwQ
 
-Github仓库地址：[https://github.com/qwqllh/OI-Algorithm](https://github.com/qwqllh/OI-Algorithm)
+Github仓库地址：[https://github.com/qwqllh/OI-Algorithms](https://github.com/qwqllh/OI-Algorithms)
 
-Gitee仓库地址：[https://gitee.com/qwqllh/OI-algorithms](https://gitee.com/qwqllh/OI-algorithms)
+Gitee仓库地址：[https://gitee.com/qwqllh/OI-Algorithms](https://gitee.com/qwqllh/OI-Algorithms)
 
 ## NOIP 常用算法
 随缘更新
