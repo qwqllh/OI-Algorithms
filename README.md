@@ -6,7 +6,7 @@
 
 Github仓库地址：[https://github.com/qwqllh/OI-Algorithm](https://github.com/qwqllh/OI-Algorithm)
 
-Gitee仓库地址：[https://gitee.com/fatsky/OIer-algorithms](https://gitee.com/fatsky/OIer-algorithms)
+Gitee仓库地址：[https://gitee.com/qwqllh/OI-algorithms](https://gitee.com/qwqllh/OI-algorithms)
 
 ## NOIP 常用算法
 随缘更新
