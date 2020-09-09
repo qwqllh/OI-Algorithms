@@ -52,13 +52,15 @@ set<Node>::iterator split(ll pos) {     // 将区间[L, R]划分成[L, pos - 1]�
 }
 
 void Assign(ll l, ll r, ll val = 0) {   // 区间赋值
-    set<Node>::iterator itl = split(l), itr = split(r + 1);
+    set<Node>::iterator itr = split(r + 1); // 必须先写itr，否则split(r + 1)的时候会导致itl出错
+    set<Node>::iterator itl = split(l);
     s.erase(itl, itr);
     s.insert(Node(l, r, val));
 }
 
 void Add(ll l, ll r, ll val) {  // 区间加
-    set<Node>::iterator itl = split(l), itr = split(r + 1);
+    set<Node>::iterator itr = split(r + 1);
+    set<Node>::iterator itl = split(l);
     for ( ; itl != itr; itl++) {
         itl -> v += val;
     }
@@ -67,7 +69,7 @@ void Add(ll l, ll r, ll val) {  // 区间加
 ll rank(ll l, ll r, ll k) {     // 区间第k小
     vector<pair<ll, ll> > vp;
     vp.clear();
-    set<Node>::iterator itl = split(l), itr = split(r + 1);
+    set<Node>::iterator itr = split(r + 1), itl = split(l);
     for ( ; itl != itr; itl++)
         vp.push_back(pair<ll, ll>(itl -> v, itl -> r - itl -> l + 1));
     
@@ -81,7 +83,7 @@ ll rank(ll l, ll r, ll k) {     // 区间第k小
 }
 
 ll SegPow(ll l, ll r, ll ex, ll mod) {      // 具体含义清参考题目
-    set<Node>::iterator itl = split(l), itr = split(r + 1);
+    set<Node>::iterator itr = split(r + 1), itl = split(l);
     ll res = 0;
     for ( ; itl != itr; itl++)
         res = (res + (itl -> r - itl -> l + 1) * fpower(itl -> v, ex, mod)) % mod;
