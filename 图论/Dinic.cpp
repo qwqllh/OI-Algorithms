@@ -1,106 +1,123 @@
+/**
+ * luogu P3254 https://www.luogu.com.cn/problem/P3254
+ * Dinic
+ **/
+
 #include <cstdio>
-#include <algorithm>
 #include <cstring>
+#include <algorithm>
 #include <queue>
 
 using namespace std;
+const int maxn = 1000;
+const int S = 0;
+const int T = maxn - 1;
+const int INF = 0x5f5f5f5f;
 
-class Graph {
-    private:
-        static const int maxn = 10005;      //节点的最大个数
-        static const int maxm = 200005;     //边的最大个数
-        static const int inf = 2e9 + 7;
-        int head[maxn];             //链式前向星存图
-        int V[maxm], C[maxm], nxt[maxm];    //每条边指向的点、每条边的容量
-        int depth[maxn];            //记录每个节点的深度层次，源点深度为1
-        int num_edge;               //总边数
+struct Edge {
+    int to, val, nxt;
+}e[maxn * maxn];
 
-        void _Add (int u, int v, int c) {   //添加一条边
-            nxt[num_edge] = head[u];
-            head[u] = num_edge;
-            V[num_edge] = v;
-            C[num_edge] = c;
-            num_edge++;
-        }
+int numedge, head[maxn], n, m, depth[maxn], ans, sum;
 
+inline void AddEdge(int from, int to, int val) {
+    e[numedge].to = to;
+    e[numedge].val = val;
+    e[numedge].nxt = head[from];
+    head[from] = numedge;
+    numedge++;
+}
 
-        bool bfs () {       //广度优先搜索，构造分层图
-            queue<int> q;
-            memset (depth, 0, sizeof (depth));
+inline void init() {
+    memset(head, -1, sizeof(head));
+}
 
-            depth[s] = 1;
-            q.push (s);
-            while (!q.empty ()) {
-                int t = q.front ();
-                q.pop ();
-                for (int i = head[t]; i != -1; i = nxt[i]) {
-                    if (C[i] > 0 && !depth[V[i]]) {     //必须确保残量>0
-                        depth[V[i]] = depth[t] + 1;
-                        q.push (V[i]);
-                    }
-                }
+inline bool bfs() {
+    memset(depth, 0, sizeof(depth));
+    depth[S] = 1;
+    queue<int> q;
+    q.push(S);
+    while (!q.empty()) {
+        int u = q.front();
+        q.pop();
+        for (int i = head[u]; ~i; i = e[i].nxt) {
+            int to = e[i].to;
+            if (!depth[to] && e[i].val > 0) {
+                depth[to] = depth[u] + 1;
+                q.push(to);
             }
-
-            if (depth[t] == 0) return false;        //没有拓展到汇点，说明不存在增广路了
-            else return true;
         }
-
-        int dfs (int u, int flow) {             //深搜更新最大流
-            if (u == t)
-                return flow;
-            
-            for (int i = head[u]; i != -1; i = nxt[i]) {
-                if (depth[V[i]] > depth[u] && C[i] != 0) {      //残量不能为0
-                    int di = dfs (V[i], min (flow, C[i]));
-                    if (di > 0) {
-                        C[i] -= di;     //正向边流量-di，反向边流量+di
-                        C[i ^ 1] += di;
-                        return di;
-                    }
-                }
-            }
-
-            return 0;
-        }
-
-    public:
-        int s, t;   //源点、汇点
-
-        void init () {
-            memset (head, -1, sizeof (head));
-            num_edge = 0;
-        }
-
-        void AddEdge (int from, int to, int cap) {
-            _Add (from, to, cap);       //加一条正向边，一条反向边
-            _Add (to, from, 0);
-        }
-
-        int Dinic () {
-            int ans = 0;
-            while (bfs ()) {    //只要有层次图，就更新最大流
-                while (int d = dfs (s, inf)) {
-                    ans += d;
-                }
-            }
-            return ans;
-        }
-};
-
-
-Graph g;
-
-int main () {
-    int n, m;
-    g.init ();
-    scanf ("%d%d%d%d", &n, &m, &g.s, &g.t);
-
-    for (int i = 0; i < m; ++i) {
-        int x, y, z;
-        scanf ("%d%d%d", &x, &y, &z);
-        g.AddEdge (x, y, z);
     }
+    return depth[T] != 0;
+}
 
-    printf ("%d\n", g.Dinic ());
+int dfs(int u, int flow) {
+    if (u == T || !flow) return flow;
+    int sum = 0;
+    for (int i = head[u]; ~i; i = e[i].nxt) {
+        int to = e[i].to;
+        if (depth[to] > depth[u] && e[i].val > 0) {
+            int di = dfs(to, min(flow, e[i].val));
+            if (di > 0) {
+                sum += di;
+                flow -= di;
+                e[i].val -= di;
+                e[i ^ 1].val += di;
+                // return di;
+            }
+        }
+    }
+    if (!sum) depth[u] = 0;
+    return sum;
+}
+
+inline int Dinic() {
+    int res = 0;
+    while (bfs()) {
+        int d;
+        while ((d = dfs(S, INF)))
+            res += d;
+    }
+    return res;
+}
+
+int main() {
+    init();
+    scanf("%d%d", &n, &m);
+    for (int i = 1; i <= n; i++) {
+        int x;
+        scanf("%d", &x);
+        sum += x;
+        AddEdge(S, i, x);
+        AddEdge(i, S, 0);
+    }
+    for (int i = 1; i <= m; i++) {
+        int x;
+        scanf("%d", &x);
+        AddEdge(i + n, T, x);
+        AddEdge(T, i + n, 0);
+    }
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= m; j++) {
+            AddEdge(i, j + n, 1);
+            AddEdge(j + n, i, 0);
+        }
+    }
+    ans = Dinic();
+    if (ans == sum) {
+        printf("1\n");
+        for (int i = 1; i <= n; i++) {
+            for (int j = head[i]; ~j; j = e[j].nxt) {
+                int to = e[j].to;
+                if (to > n && e[j].val == 0) {
+                    printf("%d ", to - n);
+                }
+            }
+            putchar('\n');
+        }
+    }
+    else {
+        printf("0\n");
+    }
     return 0;
 }
